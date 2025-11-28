@@ -1,12 +1,15 @@
 import gradio as gr
-import os
 from groq import Groq
+import os
 
-# Key Groq (sẽ lấy từ Environment để an toàn)
+# Lấy key từ Environment (an toàn 100%)
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+# Logo + tên mày (thay link logo nếu muốn)
+LOGO = "https://files.catbox.moe/t7h8i9.png"  # logo đỏ-tím xoáy của mày nè
+
 def chat_with_hieugpt(message, history):
-    messages = [{"role": "system", "content": "Bạn là HieuGPT – AI siêu thông minh, hay cà khịa, mỉa mai của Hiếu."}]
+    messages = [{"role": "system", "content": "Bạn là HieuGPT – AI siêu thông minh, hài hước và cực kỳ bá đạo của Hiệu. Trả lời thật tự nhiên, dí dỏm, dùng tiếng Việt thân thiện như bạn chí cốt."}]
     
     for user, bot in history:
         messages.append({"role": "user", "content": user})
@@ -15,39 +18,35 @@ def chat_with_hieugpt(message, history):
     
     messages.append({"role": "user", "content": message})
 
-    chat_completion = client.chat.completions.create(
+    stream = client.chat.completions.create(
+        model="llama-3.1-70b-instant",
         messages=messages,
-        model="llama-3.1-70b-instant",   # hoặc "mixtral-8x7b-32768" cũng free
         temperature=0.8,
         max_tokens=4096,
         stream=True
     )
 
     reply = ""
-    for chunk in chat_completion:
+    for chunk in stream:
         text = chunk.choices[0].delta.content or ""
         reply += text
         yield reply
 
-# === GIAO DIỆN ĐẸP NHƯ GROK ===
-css = """
-body { background: #000 !important; color: #fff; }
-.gradio-container { max-width: 900px !important; margin: auto; padding-top: 2rem; }
-"""
-
-with gr.Blocks(css=css, theme="dark", title="HieuGPT") as demo:
-    gr.HTML("""
-    <div style="text-align:center; margin-bottom:20px;">
-        <img src="https://files.catbox.moe/xxxxxx.png" width="120" style="border-radius:50%; box-shadow: 0 0 30px #ff0066;">
-        <h1 style="background: linear-gradient(90deg, #ff0066, #9900ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size:48px;">
+# GIAO DIỆN SIÊU ĐẸP + TƯƠNG THÍCH RENDER 100%
+with gr.Blocks(theme="dark", title="HieuGPT") as demo:
+    gr.HTML(f"""
+    <div style="text-align:center; padding:20px;">
+        <img src="{LOGO}" width="120" style="border-radius:50%; box-shadow: 0 0 30px #ff0066;">
+        <h1 style="background: linear-gradient(90deg, #ff0066, #9900ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin:10px 0;">
             HieuGPT
         </h1>
-        <p style="color:#ccc;">Bot của Hiệu – Miễn phí, nhanh, siêu đỉnh!</p>
+        <p style="color:#aaa;">Bot của Hiệu – Miễn phí • Siêu nhanh • Bá đạo nhất Việt Nam ❤️‍🔥</p>
     </div>
     """)
     
-    chatbot = gr.Chatbot(height=650, avatar_images=("https://api.dicebear.com/7.x/bottts/svg", "https://files.catbox.moe/xxxxxx.png"))
-    msg = gr.Textbox(placeholder="Hỏi tao cái gì đi bro...", container=False)
+    chatbot = gr.Chatbot(height=650, avatar_images=(None, LOGO))
+    msg = gr.Textbox(placeholder="Hỏi tao bất cứ gì đi bro...", container=False, scale=7)
+    
     msg.submit(chat_with_hieugpt, [msg, chatbot], [msg, chatbot])
 
 demo.queue(max_size=50).launch()
