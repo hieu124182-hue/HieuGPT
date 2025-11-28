@@ -14,7 +14,7 @@ def chat(message, history):
     return resp.choices[0].message.content
 
 with gr.Blocks() as demo:
-    gr.Markdown("# 🤖 HieuGPT – Bot của Hiệu siêu đỉnh")
+    gr.Markdown("# HieuGPT ")
     chatbot = gr.Chatbot(height=600)
     txt = gr.Textbox(placeholder="Hỏi gì tao cũng trả lời ngon lành...", label="Tin nhắn")
     
