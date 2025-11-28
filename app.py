@@ -6,7 +6,7 @@ from groq import Groq
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def chat_with_hieugpt(message, history):
-    messages = [{"role": "system", "content": "Bạn là HieuGPT – AI siêu thông minh, hài hước và bá đạo của Hiệu."}]
+    messages = [{"role": "system", "content": "Bạn là HieuGPT – AI siêu thông minh, hay cà khịa, mỉa mai của Hiếu."}]
     
     for user, bot in history:
         messages.append({"role": "user", "content": user})
@@ -35,7 +35,7 @@ body { background: #000 !important; color: #fff; }
 .gradio-container { max-width: 900px !important; margin: auto; padding-top: 2rem; }
 """
 
-with gr.Blocks(css=css, theme=gr.themes.Dark(), title="HieuGPT") as demo:
+with gr.Blocks(css=css, theme="dark", title="HieuGPT") as demo:
     gr.HTML("""
     <div style="text-align:center; margin-bottom:20px;">
         <img src="https://files.catbox.moe/xxxxxx.png" width="120" style="border-radius:50%; box-shadow: 0 0 30px #ff0066;">
