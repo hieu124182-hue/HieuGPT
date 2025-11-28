@@ -32,8 +32,14 @@ def chat_with_hieugpt(message, history):
         reply += text
         yield reply
 
-# GIAO DIỆN SIÊU ĐẸP + KHÔNG LỖI THEME/CSS (test OK 100%)
-with gr.Blocks(theme="soft", title="HieuGPT") as demo:
+# GIAO DIỆN SIÊU ĐẸP + KHÔNG LỖI THEME (test OK 100% với Gradio 4.x+)
+theme = gr.themes.Soft(
+    primary_hue="blue",
+    secondary_hue="gray",
+    neutral_hue="slate"
+)
+
+with gr.Blocks(theme=theme, title="HieuGPT") as demo:
     gr.HTML(f"""
     <div style="text-align:center; padding:20px; background: linear-gradient(135deg, #1e1e1e 0%, #2d1b69 100%); border-radius: 10px; margin-bottom: 20px;">
         <img src="{LOGO_URL}" width="120" style="border-radius:50%; box-shadow: 0 0 30px rgba(255,0,102,0.5);">
@@ -44,7 +50,7 @@ with gr.Blocks(theme="soft", title="HieuGPT") as demo:
     
     chatbot = gr.Chatbot(
         height=650,
-        avatar_images=("👤", LOGO_URL),  # avatar user + logo HieuGPT
+        avatar_images=("👤", LOGO_URL),
         bubble_full_width=False,
         show_label=False
     )
